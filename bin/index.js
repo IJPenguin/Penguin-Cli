@@ -15,7 +15,6 @@ const sleep = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
 const program = new Command();
 const configPath = process.env.CONFIG_PATH || "config.json";
 
-let animeName = "";
 let page = 1;
 
 const start = async () => {
@@ -32,13 +31,16 @@ const spinner = async (startText, succeedText) => {
 	spinner.stop();
 };
 
-const askTitle = async () => {
-	const askAnimeName = await inquirer.prompt({
-		name: "animeName",
-		type: "input",
-		message: "Enter Anime Name 🐧",
-	});
-	animeName = askTitle.title;
+const askTitle = async (animeName) => {
+	const answers = await inquirer.prompt([
+		{
+			type: "input",
+			name: "animeName",
+			message: "Enter Anime Name 🐧",
+		},
+	]);
+
+	return answers.animeName;
 };
 
 const getLink = async (animeName, page) => {
@@ -54,8 +56,8 @@ const getLink = async (animeName, page) => {
 			}
 		});
 };
-
+  
 await spinner("Waking up Penguin 🐧", "Penguin has woken up 🐧");
 await start();
-await askTitle();
+const animeName = await askTitle();
 await getLink(animeName, page);
