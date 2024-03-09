@@ -14,11 +14,11 @@ To use Penguin, follow these easy steps:
     npm install -g penguin
     ```
     
-    Run the command:
+2. Run the command:
 
    ```
-     penguin
-    ```
+   penguin
+   ```
    You will be prompted to enter the name of the anime you want to watch.
 
 ## Features
