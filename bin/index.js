@@ -8,8 +8,58 @@ import "dotenv/config";
 import { Command } from "commander";
 import axios from "axios";
 import { exec } from "child_process";
+import { promises as fsPromises } from "fs";
 
+const CONFIG_FILE_PATH = "config.json";
 
+async function checkAndInstallDependencies() {
+	try {
+		exec("mpv --version");
+	} catch (error) {
+		console.log("mpv is not installed. Installing...");
+		exec("your-package-manager install mpv");
+		console.log("mpv has been installed.");
+	}
+
+	try {
+		exec("npm i");
+	} catch (error) {
+		console.log(
+			"An error occurred while installing dependencies. Please install them manually using 'npm i' command."
+		);
+	}
+}
+
+async function checkFirstRun() {
+	try {
+		const configFileContent = await fsPromises.readFile(
+			CONFIG_FILE_PATH,
+			"utf-8"
+		);
+		const config = JSON.parse(configFileContent);
+
+		if (config.firstRun) {
+			checkAndInstallDependencies();
+			config.firstRun = false;
+			await fsPromises.writeFile(
+				CONFIG_FILE_PATH,
+				JSON.stringify(config, null, 2),
+				"utf-8"
+			);
+		}
+	} catch (error) {
+		console.error("Error:", error.message);
+
+		const initialConfig = { firstRun: true };
+		await fsPromises.writeFile(
+			CONFIG_FILE_PATH,
+			JSON.stringify(initialConfig, null, 2),
+			"utf-8"
+		);
+	}
+}
+
+await checkFirstRun();
 
 const url = `http://localhost:4000/anime/`;
 const sleep = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
