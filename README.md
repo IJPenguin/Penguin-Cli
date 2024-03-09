@@ -35,17 +35,17 @@ To use Penguin, follow these easy steps:
 
 Penguin is powered by several Node.js libraries, including:
 
-    Chalk: For adding color to the command-line output.
+1. Chalk: For adding color to the command-line output.
 
-    Figlet: Creating ASCII art text for a stylish CLI header.
+2. Figlet: Creating ASCII art text for a stylish CLI header.
 
-    Inquirer: Handling user prompts for a smooth and interactive experience.
+3. Inquirer: Handling user prompts for a smooth and interactive experience.
 
-    Ora: Adding loading spinners to enhance the user interface.
+4. Ora: Adding loading spinners to enhance the user interface.
 
-    Axios: Making HTTP requests to fetch anime data.
+5. Axios: Making HTTP requests to fetch anime data.
 
-    Execa: Running shell commands for executing streaming actions.
+6. Exec: Running shell commands for executing streaming actions.
 
 ## Contribution
 
