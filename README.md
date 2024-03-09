@@ -12,15 +12,14 @@ To use Penguin, follow these easy steps:
 
     ```bash
     npm install -g penguin
-
-     Run the command:
-
-     bash
-
-     penguin
-
-     You will be prompted to enter the name of the anime you want to watch.
     ```
+    
+    Run the command:
+
+   ```bash
+     penguin
+    ```
+   You will be prompted to enter the name of the anime you want to watch.
 
 ## Features
 
