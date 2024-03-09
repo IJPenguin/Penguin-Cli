@@ -8,8 +8,7 @@ import "dotenv/config";
 import { Command } from "commander";
 import axios from "axios";
 
-import * as fs from "fs";
-
+const url = `http://localhost:4000/anime/`;
 const sleep = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
 
 const program = new Command();
@@ -24,40 +23,93 @@ const start = async () => {
 
 const spinner = async (startText, succeedText) => {
 	const spinner = ora(startText).start();
-	await sleep(1000);
+	await sleep(500);
 	spinner.color = "blue";
 	spinner.text = succeedText;
-	await sleep(1500);
+	await sleep(500);
 	spinner.stop();
 };
 
-const askTitle = async (animeName) => {
+const colorizeChoices = (choices) => {
+	return choices.map((choice) => chalk.green(choice));
+};
+
+const askTitle = async () => {
 	const answers = await inquirer.prompt([
 		{
 			type: "input",
 			name: "animeName",
-			message: "Enter Anime Name 🐧",
+			message: "Enter Anime Name: ",
 		},
 	]);
 
 	return answers.animeName;
 };
 
-const getLink = async (animeName, page) => {
-	const query = axios
-		.get(`http://localhost:4000/anime/search?q=${animeName}&page=${page}`)
-		.then((res) => {
-			const data = res.data;
-			console.log(data.animes);
-			let i = 0;
-			for (const anime of data.animes) {
-				i++;
-				console.log(`${i} - ${anime.name}`);
+const getAnimeId = async (animeName, page) => {
+	let animeId;
+	axios.get(url + `search?q=${animeName}&page=${page}`).then(async (res) => {
+		const data = res.data;
+		const animeSelector = await inquirer.prompt([
+			{
+				type: "list",
+				name: "anime",
+				message: "Select Anime",
+				choices: colorizeChoices(
+					data.animes.map((anime) => anime.name)
+				).concat(chalk.blue("Next Page")),
+			},
+		]);
+
+		if (
+			animeSelector.anime === chalk.blue("Next Page") &&
+			data.hasNextPage
+		) {
+			page++;
+			await getLink(animeName, page);
+		} else if (
+			animeSelector.anime === chalk.blue("Next Page") &&
+			!data.hasNextPage
+		) {
+			console.log(chalk.italic("No Next Page Available"));
+			await getLink(animeName, page);
+		}
+
+		for (let anime of data.animes) {
+			if (chalk.green(anime.name) === animeSelector.anime) {
+				animeId = anime.id;
+				break;
 			}
-		});
+		}
+	});
+	return animeId;
 };
-  
-await spinner("Waking up Penguin 🐧", "Penguin has woken up 🐧");
+
+const getEpisodeId = async (animeId) => {
+	let episodeId;
+	axios.get(url + `episodes/${animeId}`).then(async (res) => {
+		const data = res.data;
+		const episodeSelector = await inquirer.prompt([
+			{
+				type: "input",
+				name: "episode",
+				message: `Enter Episode Number (1 - ${data.totalEpisodes}): `,
+			},
+		]);
+		const episode = data.episodes[episodeSelector.episode - 1];
+		episodeId = episode.episodeId;
+	});
+	return episodeId;
+};
+
+const getLink = async (animeName, page) => {
+	let animeId;
+	let episodeId;
+	animeId = getAnimeId(animeName, page);
+	episodeId = getEpisodeId(animeId);
+};
+
+// await spinner("Waking up Penguin 🐧", "Penguin has woken up 🐧");
 await start();
 const animeName = await askTitle();
-await getLink(animeName, page);
+const animeLink = await getLink(animeName, page);
