@@ -1,6 +1,6 @@
 # Penguin - Anime CLI
 
-![Penguin Logo](link_to_your_logo.png)
+![Penguin Logo](https://imgur.com/a/ozNViDy)
 
 Penguin is a command-line interface (CLI) project written in JavaScript that allows users to conveniently watch anime on their PCs for free. With a simple installation process and an intuitive interface, Penguin makes anime streaming accessible and enjoyable for anime enthusiasts.
 
@@ -22,7 +22,7 @@ To use Penguin, follow these easy steps:
      You will be prompted to enter the name of the anime you want to watch.
     ```
 
-Features
+## Features
 
     Search for Anime: Enter the name of your favorite anime, and Penguin will provide you with a list of available options.
 
@@ -32,7 +32,7 @@ Features
 
     Subtitle Options: Currently, Penguin supports the subbed version, with plans to introduce options for both subbed and dubbed versions in the future.
 
-Dependencies
+## Dependencies
 
 Penguin is powered by several Node.js libraries, including:
 
@@ -48,13 +48,13 @@ Penguin is powered by several Node.js libraries, including:
 
     Execa: Running shell commands for executing streaming actions.
 
-Contribution
+## Contribution
 
 Contributions to Penguin are welcome! If you have ideas for new features, improvements, or bug fixes, feel free to open an issue or submit a pull request. Please check the contribution guidelines before getting started.
 License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details.
-Acknowledgments
+## Acknowledgments
 
 Special thanks to the open-source community and the developers behind the libraries used in this project.
 
