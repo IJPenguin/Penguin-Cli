@@ -107,7 +107,6 @@ const getEpisodeId = async (animeId) => {
 	} catch (err) {
 		console.log(err);
 	}
-
 	return episodeId;
 };
 
