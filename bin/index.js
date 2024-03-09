@@ -22,12 +22,12 @@ const start = async () => {
 	console.log(chalk.blue(startText), "\n");
 };
 
-const spinner = async (startText, succeedText) => {
+const spinner = async (startText, succeedText, time) => {
 	const spinner = ora(startText).start();
-	await sleep(500);
+	await sleep(time);
 	spinner.color = "blue";
 	spinner.text = succeedText;
-	await sleep(500);
+	await sleep(time);
 	spinner.stop();
 };
 
@@ -49,64 +49,81 @@ const askTitle = async () => {
 
 const getAnimeId = async (animeName, page) => {
 	let animeId;
-	await axios
-		.get(`${url}search?q=${animeName}&page=${page}`)
-		.then(async (res) => {
-			const data = res.data;
-			const animeSelector = await inquirer.prompt([
-				{
-					type: "list",
-					name: "anime",
-					message: "Select Anime",
-					choices: colorizeChoices(
-						data.animes.map((anime) => anime.name)
-					).concat(chalk.blue("Next Page")),
-				},
-			]);
 
-			if (
-				animeSelector.anime === chalk.blue("Next Page") &&
-				data.hasNextPage
-			) {
-				page++;
-				await getLink(animeName, page);
-			} else if (
-				animeSelector.anime === chalk.blue("Next Page") &&
-				!data.hasNextPage
-			) {
-				console.log(chalk.italic("No Next Page Available"));
-				await getLink(animeName, page);
-			}
+	const spinnerText = "Searching for anime...";
+	const succeedText = "Anime information retrieved successfully.";
 
-			for (let anime of data.animes) {
-				if (chalk.green(anime.name) === animeSelector.anime) {
-					animeId = anime.id;
-					break;
-				}
+	try {
+		await spinner(spinnerText, succeedText, 1000);
+
+		const res = await axios.get(`${url}search?q=${animeName}&page=${page}`);
+		const data = res.data;
+
+		const animeSelector = await inquirer.prompt([
+			{
+				type: "list",
+				name: "anime",
+				message: "Select Anime",
+				choices: colorizeChoices(
+					data.animes.map((anime) => anime.name)
+				).concat(chalk.blue("Next Page")),
+			},
+		]);
+
+		if (
+			animeSelector.anime === chalk.blue("Next Page") &&
+			data.hasNextPage
+		) {
+			page++;
+			await getLink(animeName, page);
+		} else if (
+			animeSelector.anime === chalk.blue("Next Page") &&
+			!data.hasNextPage
+		) {
+			console.log(chalk.italic("No Next Page Available"));
+			await getLink(animeName, page);
+		}
+
+		for (let anime of data.animes) {
+			if (chalk.green(anime.name) === animeSelector.anime) {
+				animeId = anime.id;
+				break;
 			}
-		});
+		}
+	} catch (err) {
+		await spinner("", chalk.red("An Error Occurred 🐧🔧"));
+	}
+
 	return animeId;
 };
 
 const getEpisodeId = async (animeId) => {
 	let episodeId;
+
+	const spinnerText = "Fetching episode information...";
+	const succeedText = "Episode information retrieved successfully.";
+
 	try {
-		await axios.get(`${url}episodes/${animeId}`).then(async (res) => {
-			const data = res.data;
-			const episodeSelector = await inquirer.prompt([
-				{
-					type: "input",
-					name: "episode",
-					message: `Enter Episode Number (1 - ${data.totalEpisodes}): `,
-				},
-			]);
-			const episode = data.episodes[episodeSelector.episode - 1];
-			episodeId = episode.episodeId;
-			console.log(episodeId);
-		});
+		await spinner(spinnerText, succeedText, 1000);
+
+		const res = await axios.get(`${url}episodes/${animeId}`);
+		const data = res.data;
+
+		const episodeSelector = await inquirer.prompt([
+			{
+				type: "input",
+				name: "episode",
+				message: `Enter Episode Number (1 - ${data.totalEpisodes}): `,
+			},
+		]);
+
+		const episode = data.episodes[episodeSelector.episode - 1];
+		episodeId = episode.episodeId;
+		console.log(episodeId);
 	} catch (err) {
-		console.log(err);
+		await spinner("", chalk.red("An Error Occurred 🐧🔧"));
 	}
+
 	return episodeId;
 };
 
@@ -114,21 +131,23 @@ const getLink = async (animeName, page, server, category) => {
 	const animeId = await getAnimeId(animeName, page);
 	const episodeId = await getEpisodeId(animeId);
 	let animeLink;
-
-	await axios
-		.get(
-			`${url}episode-srcs?id=${episodeId}&server=${server}&category=${category}`
-		)
-		.then((res) => {
-			const data = res.data;
-			animeLink = data.sources[0].url;
-			console.log(animeLink);
-		});
-
+	try {
+		await axios
+			.get(
+				`${url}episode-srcs?id=${episodeId}&server=${server}&category=${category}`
+			)
+			.then((res) => {
+				const data = res.data;
+				animeLink = data.sources[0].url;
+				console.log(animeLink);
+			});
+	} catch (err) {
+		console.log(chalk.red("An Error Occurred 🐧🔧"));
+	}
 	return animeLink;
 };
 
-// await spinner("Waking up Penguin 🐧", "Penguin has woken up 🐧");
+await spinner("Waking up Penguin 🐧", "Penguin has woken up 🐧", 200);
 await start();
 const animeName = await askTitle();
 const animeLink = await getLink(animeName, page, server, category);
