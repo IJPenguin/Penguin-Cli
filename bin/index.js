@@ -7,6 +7,9 @@ import ora from "ora";
 import "dotenv/config";
 import { Command } from "commander";
 import axios from "axios";
+import { exec } from "child_process";
+
+
 
 const url = `http://localhost:4000/anime/`;
 const sleep = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
@@ -119,7 +122,6 @@ const getEpisodeId = async (animeId) => {
 
 		const episode = data.episodes[episodeSelector.episode - 1];
 		episodeId = episode.episodeId;
-		console.log(episodeId);
 	} catch (err) {
 		await spinner("", chalk.red("An Error Occurred 🐧🔧"));
 	}
@@ -131,23 +133,36 @@ const getLink = async (animeName, page, server, category) => {
 	const animeId = await getAnimeId(animeName, page);
 	const episodeId = await getEpisodeId(animeId);
 	let animeLink;
+	const spinnerText = "Fetching Episode Link...";
+	const succeedText = "Episode Link retrieved successfully.";
 	try {
-		await axios
-			.get(
-				`${url}episode-srcs?id=${episodeId}&server=${server}&category=${category}`
-			)
-			.then((res) => {
-				const data = res.data;
-				animeLink = data.sources[0].url;
-				console.log(animeLink);
-			});
+		await spinner(spinnerText, succeedText, 1000);
+
+		const res = await axios.get(
+			`${url}episode-srcs?id=${episodeId}&server=${server}&category=${category}`
+		);
+		const data = res.data;
+		animeLink = data.sources[0].url;
+		return animeLink;
 	} catch (err) {
 		console.log(chalk.red("An Error Occurred 🐧🔧"));
 	}
-	return animeLink;
+};
+
+const play = async (animeLink) => {
+	const command = `mpv ${animeLink}`;
+	const spinnerText = "Starting the Stream...";
+	const succeedText = "Anime is playing...";
+	try {
+		await spinner(spinnerText, succeedText, 5000);
+		const { stdout, stderr } = exec(command);
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+	}
 };
 
 await spinner("Waking up Penguin 🐧", "Penguin has woken up 🐧", 200);
 await start();
 const animeName = await askTitle();
 const animeLink = await getLink(animeName, page, server, category);
+play(animeLink);
