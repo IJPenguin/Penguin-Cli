@@ -23,13 +23,13 @@ To use Penguin, follow these easy steps:
 
 ## Features
 
-    Search for Anime: Enter the name of your favorite anime, and Penguin will provide you with a list of available options.
+1. Search for Anime: Enter the name of your favorite anime, and Penguin will provide you with a list of available options.
 
-    Easy Navigation: Use arrow keys to navigate through the list or move to the next page.
+2. Easy Navigation: Use arrow keys to navigate through the list or move to the next page.
 
-    Start Watching: Once you find the desired anime, press enter, and Penguin will start playing it.
+3. Start Watching: Once you find the desired anime, press enter, and Penguin will start playing it.
 
-    Subtitle Options: Currently, Penguin supports the subbed version, with plans to introduce options for both subbed and dubbed versions in the future.
+4. Subtitle Options: Currently, Penguin supports the subbed version, with plans to introduce options for both subbed and dubbed versions in the future.
 
 ## Dependencies
 
