@@ -53,7 +53,7 @@ async function checkFirstRun() {
 
 await checkFirstRun();
 
-const url = `https://penguin.serverbot.site/anime`;
+const url = `https://penguin.serverbot.site/anime/`;
 const sleep = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
 const category = "sub";
 const server = "vidstreaming";
@@ -137,6 +137,7 @@ const getAnimeId = async (animeName, page) => {
 		}
 	} catch (err) {
 		await spinner("", chalk.red("An Error Occurred 🐧🔧"));
+		process.exit();
 	}
 
 	return animeId;
@@ -188,6 +189,7 @@ const getLink = async (animeName, page, server, category) => {
 		return animeLink;
 	} catch (err) {
 		console.log(chalk.red("An Error Occurred 🐧🔧"));
+		process.exit();
 	}
 };
 
@@ -200,6 +202,7 @@ const play = async (animeLink) => {
 		const { stdout, stderr } = exec(command);
 	} catch (error) {
 		console.error(`Error: ${error.message}`);
+		process.exit();
 	}
 };
 
