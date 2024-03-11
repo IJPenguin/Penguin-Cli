@@ -175,7 +175,7 @@ const getEpisodeId = async (animeId) => {
 const getLink = async (animeName, page, server, category) => {
 	const animeId = await getAnimeId(animeName, page);
 	const episodeId = await getEpisodeId(animeId);
-	let animeLink;
+	let animeLink, subLinks, subLink;
 	const spinnerText = "Fetching Episode Link...";
 	const succeedText = "Episode Link retrieved successfully.";
 	try {
@@ -186,15 +186,23 @@ const getLink = async (animeName, page, server, category) => {
 		);
 		const data = res.data;
 		animeLink = data.sources[0].url;
-		return animeLink;
+		subLinks = data.tracks;
+		for (let sub of subLinks) {
+			if (sub.label === "English") {
+				subLink = sub.file;
+				break;
+			}
+		}
+		return { animeLink, subLink };
 	} catch (err) {
+		console.log(err.message);
 		console.log(chalk.red("An Error Occurred 🐧🔧"));
 		process.exit();
 	}
 };
 
-const play = async (animeLink) => {
-	const command = `mpv ${animeLink}`;
+const play = async (animeLink, subLink) => {
+	const command = `mpv ${animeLink} --sub-file=${subLink}`;
 	const spinnerText = "Starting the Stream...";
 	const succeedText = "Anime is playing...";
 	try {
@@ -209,5 +217,5 @@ const play = async (animeLink) => {
 await spinner("Waking up Penguin 🐧", "Penguin has woken up 🐧", 200);
 await start();
 const animeName = await askTitle();
-const animeLink = await getLink(animeName, page, server, category);
-play(animeLink);
+const { animeLink, subLink } = await getLink(animeName, page, server, category);
+play(animeLink, subLink);
