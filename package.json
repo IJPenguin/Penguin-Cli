@@ -1,6 +1,6 @@
 {
 	"name": "penguin-cli",
-	"version": "1.0.3 ",
+	"version": "1.0.4",
 	"description": "A cli tool to watch anime from the terminal",
 	"main": "./bin/index.js",
 	"type": "module",

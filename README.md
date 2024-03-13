@@ -11,15 +11,16 @@ To use Penguin, follow these easy steps:
 1. Install Penguin globally using npm:
 
     ```
-    npm install -g penguin
+    npm install -g penguin-cli
     ```
-    
+
 2. Run the command:
 
-   ```
-   penguin
-   ```
-   You will be prompted to enter the name of the anime you want to watch.
+    ```
+    penguin
+    ```
+
+    You will be prompted to enter the name of the anime you want to watch.
 
 ## Features
 
@@ -53,6 +54,7 @@ Contributions to Penguin are welcome! If you have ideas for new features, improv
 License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details.
+
 ## Acknowledgments
 
 Special thanks to the open-source community and the developers behind the libraries used in this project.
