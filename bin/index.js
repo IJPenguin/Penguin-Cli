@@ -53,7 +53,7 @@ async function checkFirstRun() {
 
 await checkFirstRun();
 
-const url = `https://penguin.serverbot.site/anime/`;
+const url = `https://penguincliapi.azurewebsites.net/anime/`;
 // const url = `http://localhost:4000/anime/`;
 const sleep = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
 const category = "sub";
