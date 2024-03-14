@@ -54,6 +54,7 @@ async function checkFirstRun() {
 await checkFirstRun();
 
 const url = `https://penguin.serverbot.site/anime/`;
+// const url = `http://localhost:4000/anime/`;
 const sleep = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
 const category = "sub";
 const server = "vidstreaming";
@@ -136,7 +137,7 @@ const getAnimeId = async (animeName, page) => {
 			}
 		}
 	} catch (err) {
-		await spinner("", chalk.red("An Error Occurred 🐧🔧"));
+		errorHandle(err);
 		process.exit();
 	}
 
@@ -166,7 +167,7 @@ const getEpisodeId = async (animeId) => {
 		const episode = data.episodes[episodeSelector.episode - 1];
 		episodeId = episode.episodeId;
 	} catch (err) {
-		await spinner("", chalk.red("An Error Occurred 🐧🔧"));
+		errorHandle(err);
 	}
 
 	return episodeId;
@@ -195,8 +196,7 @@ const getLink = async (animeName, page, server, category) => {
 		}
 		return { animeLink, subLink };
 	} catch (err) {
-		console.log(err.message);
-		console.log(chalk.red("An Error Occurred 🐧🔧"));
+		errorHandle(err);
 		process.exit();
 	}
 };
@@ -209,9 +209,15 @@ const play = async (animeLink, subLink) => {
 		await spinner(spinnerText, succeedText, 5000);
 		const { stdout, stderr } = exec(command);
 	} catch (error) {
-		console.error(`Error: ${error.message}`);
+		errorHandle(error);
 		process.exit();
 	}
+};
+
+const errorHandle = (err) => {
+	console.log(chalk.red("A Server Error Occurred 🐧🔧"));
+	console.log(err.name);
+	console.log(err.message);
 };
 
 await spinner("Waking up Penguin 🐧", "Penguin has woken up 🐧", 200);
