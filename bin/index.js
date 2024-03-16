@@ -6,33 +6,28 @@ import inquirer from "inquirer";
 import ora from "ora";
 import { Command } from "commander";
 import axios from "axios";
-import { exec, spawn } from "child_process";
+import { exec } from "child_process";
 import os from "os";
 
-const userDir = os.userInfo().homedir;
 const url = `https://penguincliapi.azurewebsites.net/anime/`;
 const sleep = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
 const category = "sub";
 const server = "vidstreaming";
 let page = 1;
-const install_mpv = `${userDir}\\AppData\\Roaming\\npm\\node_modules\\penguin-cli\\bin\\install_mpv.bat`;
 
 async function checkMpvInstalled() {
-	try {
-		exec("mpv --h", (error, stdout, stderr) => {
-			if (error) {
-				console.log("MPV is not installed. Please install MPV first.");
-				console.log("You can install MPV by running the following batch file:");
-				console.log(install_mpv);
-				return;
-			}
-		});
-	} catch (error) {
-		console.log("An error occurred while checking for mpv installation.");
-		console.log(error);
-		checkAndInstallDependencies();
-		process.exit();
-	}
+	exec("mpv", (error, stdout, stderr) => {
+		if (error) {
+			console.log("MPV is not installed. Please install MPV first.");
+			console.log(
+				"You can install MPV by running the following batch file:"
+			);
+			console.log(
+				`https://rawcdn.githack.com/IJPenguin/Penguin-Cli/bacd6521ec7e540a458027a30d39018fc6ad01cb/bin/install_mpv.bat`
+			);
+			return;
+		}
+	});
 }
 
 const start = async () => {
@@ -192,10 +187,9 @@ const errorHandle = (err) => {
 	console.log(err.message);
 };
 
-await checkAndInstallDependencies();
-// await checkMpvInstalled();
-// await spinner("Waking up Penguin 🐧", "Penguin has woken up 🐧", 200);
-// await start();
-// const animeName = await askTitle();
-// const { animeLink, subLink } = await getLink(animeName, page, server, category);
-// play(animeLink, subLink);
+await checkMpvInstalled();
+await spinner("Waking up Penguin 🐧", "Penguin has woken up 🐧", 200);
+await start();
+const animeName = await askTitle();
+const { animeLink, subLink } = await getLink(animeName, page, server, category);
+play(animeLink, subLink);
