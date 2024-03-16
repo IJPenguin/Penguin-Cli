@@ -17,14 +17,20 @@ if %errorlevel% neq 0 (
 )
 
 :: Install MPV player using Chocolatey
-echo Installing MPV player...
-choco install mpv -y
 
+mpv --h > nul 2>&1
 if %errorlevel% equ 0 (
-    echo MPV player installed successfully.
+    echo MPV player is already installed.
 ) else (
-    echo Error: Failed to install MPV player.
-    exit /b 1
+    echo MPV player is not installed. Installing now...
+    choco install mpv -y
+    if %errorlevel% equ 0 (
+        echo MPV player installed successfully.
+    ) else (
+        echo Error: Failed to install MPV player.
+        exit /b 1
+    )
 )
+
 
 pause
