@@ -1,6 +1,8 @@
 # Penguin - Anime CLI
 
-![Penguin Logo](https://imgur.com/a/ozNViDy)
+![Penguin Logo](https://i.postimg.cc/02FzfjPG/Penguin-logo.png)
+
+# You need mpv video player for penguin to work. You can install the video player using [install_mpv.bat](https://rawcdn.githack.com/IJPenguin/Penguin-Cli/bacd6521ec7e540a458027a30d39018fc6ad01cb/bin/install_mpv.bat)
 
 Penguin is a command-line interface (CLI) project written in JavaScript that allows users to conveniently watch anime on their PCs for free. With a simple installation process and an intuitive interface, Penguin makes anime streaming accessible and enjoyable for anime enthusiasts.
 
