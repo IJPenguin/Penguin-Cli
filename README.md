@@ -1,6 +1,6 @@
 # Penguin - Anime CLI
 <p align="center">
-![Penguin Logo](https://i.postimg.cc/d37qkR7b/Penguin-logo.png)
+[Penguin Logo](https://i.postimg.cc/d37qkR7b/Penguin-logo.png)
 </p>
 
 ### You need mpv video player for penguin to work. You can install the video player using [install_mpv.bat](https://rawcdn.githack.com/IJPenguin/Penguin-Cli/bacd6521ec7e540a458027a30d39018fc6ad01cb/bin/install_mpv.bat)
