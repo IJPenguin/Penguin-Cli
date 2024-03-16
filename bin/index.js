@@ -7,11 +7,10 @@ import ora from "ora";
 import { Command } from "commander";
 import axios from "axios";
 import { exec } from "child_process";
-import path from "path";
 import { promises as fs } from "fs";
 
-const batchFilePath = path.join("bin", "install_mpv.bat");
-const configPath = path.join("bin", "config.json");
+const batchFilePath = "install_mpv.bat";
+const configPath = "config.json";
 const url = `https://penguincliapi.azurewebsites.net/anime/`;
 const sleep = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
 const category = "sub";
