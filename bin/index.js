@@ -25,6 +25,7 @@ async function checkMpvInstalled() {
 			console.log(
 				`https://rawcdn.githack.com/IJPenguin/Penguin-Cli/bacd6521ec7e540a458027a30d39018fc6ad01cb/bin/install_mpv.bat`
 			);
+			process.exit();
 			return;
 		}
 	});
