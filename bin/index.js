@@ -4,64 +4,40 @@ import chalk from "chalk";
 import figlet from "figlet";
 import inquirer from "inquirer";
 import ora from "ora";
-import "dotenv/config";
 import { Command } from "commander";
 import axios from "axios";
 import { exec } from "child_process";
-import { promises as fsPromises } from "fs";
+import path from "path";
+import { promises as fs } from "fs";
 
-const CONFIG_FILE_PATH = "../config.json";
-
-async function checkAndInstallDependencies() {
-	try {
-		exec("mpv --version");
-	} catch (error) {
-		console.log("mpv is not installed. Installing...");
-		exec("choco install mpv");
-		console.log("mpv has been installed.");
-	}
-}
-
-async function checkFirstRun() {
-	try {
-		const configFileContent = await fsPromises.readFile(
-			CONFIG_FILE_PATH,
-			"utf-8"
-		);
-		const config = JSON.parse(configFileContent);
-
-		if (config.firstRun) {
-			checkAndInstallDependencies();
-			config.firstRun = false;
-			await fsPromises.writeFile(
-				CONFIG_FILE_PATH,
-				JSON.stringify(config, null, 2),
-				"utf-8"
-			);
-		}
-	} catch (error) {
-		console.error("Error:", error.message);
-
-		const initialConfig = { firstRun: true };
-		await fsPromises.writeFile(
-			CONFIG_FILE_PATH,
-			JSON.stringify(initialConfig, null, 2),
-			"utf-8"
-		);
-	}
-}
-
-await checkFirstRun();
-
+const batchFilePath = path.join("bin", "install_mpv.bat");
+const configPath = path.join("bin", "config.json");
 const url = `https://penguincliapi.azurewebsites.net/anime/`;
-// const url = `http://localhost:4000/anime/`;
 const sleep = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
 const category = "sub";
 const server = "vidstreaming";
-const program = new Command();
-const configPath = process.env.CONFIG_PATH || "config.json";
-
 let page = 1;
+
+async function checkAndInstallDependencies() {
+	exec(batchFilePath, (error, stdout, stderr) => {
+		if (error) {
+			console.error(`Error executing batch file: ${error}`);
+			return;
+		}
+		console.log(`stdout: ${stdout}`);
+		console.error(`stderr: ${stderr}`);
+	});
+}
+
+async function checkFirstRun() {
+	const config = await fs.readFile(configPath, "utf-8");
+	const data = JSON.parse(config);
+	if (data.firstRun === true) {
+		await checkAndInstallDependencies();
+		data.firstRun = false;
+		await fs.writeFile(configPath, JSON.stringify(data, null, 2));
+	}
+}
 
 const start = async () => {
 	const startText = await figlet("Penguin", "Graffiti");
@@ -220,6 +196,7 @@ const errorHandle = (err) => {
 	console.log(err.message);
 };
 
+await checkFirstRun();
 await spinner("Waking up Penguin 🐧", "Penguin has woken up 🐧", 200);
 await start();
 const animeName = await askTitle();
